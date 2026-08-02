@@ -12,83 +12,106 @@ const projectListDOM = document.querySelector(".project-list");
 const addProjectButton = document.querySelector(".add-project-btn");
 const mainContent = document.querySelector(".main-content");
 const dialogWrapper = document.querySelector(".dialog-wrapper");
+
+let projectNameField,
+  todoTitleField,
+  todoDescriptionField,
+  todoDueDateField,
+  todoPriorityField,
+  todoNotesField,
+  todoChecklistField;
+
 let projectListArr = [];
 
-function createDialogFields(dialogFieldsDiv) {
+function addProjectToProjectListDOM() {
+  const projectNameVal = projectNameField.value;
+  if (projectNameVal.trim().length !== 0) {
+    const newProject = document.createElement("li");
+    newProject.textContent = `${projectNameVal}`;
+    projectListDOM.appendChild(newProject);
+    projectListArr.push(projectNameVal);
+  }
+}
+
+function createProjectDialog(header, dialogFieldsDiv) {
+  header.textContent = "Create a New Project";
   const projectNameLabel = document.createElement("label");
   projectNameLabel.htmlFor = "project-name";
   projectNameLabel.textContent = "Project Name";
 
-  const titleLabel = document.createElement("label");
-  titleLabel.htmlFor = "title";
-  titleLabel.textContent = "Title";
-
-  const descriptionLabel = document.createElement("label");
-  descriptionLabel.htmlFor = "description";
-  descriptionLabel.textContent = "Description";
-
-  const dueDateLabel = document.createElement("label");
-  dueDateLabel.htmlFor = "due-date";
-  dueDateLabel.textContent = "Due date";
-
-  const priorityLabel = document.createElement("label");
-  priorityLabel.htmlFor = "priority";
-  priorityLabel.textContent = "Priority";
-
-  const notesLabel = document.createElement("label");
-  notesLabel.htmlFor = "notes";
-  notesLabel.textContent = "Notes";
-
-  const checklistLabel = document.createElement("label");
-  checklistLabel.htmlFor = "check-list";
-  checklistLabel.textContent = "Checklist";
-
-  const projectNameField = document.createElement("input");
+  projectNameField = document.createElement("input");
   projectNameField.type = "text";
   projectNameField.id = "project-name";
 
-  const titleField = document.createElement("input");
-  titleField.type = "text";
-  titleField.id = "title";
+  dialogFieldsDiv.append(projectNameLabel, projectNameField);
+}
 
-  const descriptionField = document.createElement("textarea");
-  descriptionField.id = "description";
+function createToDoDialog(header, dialogFieldsDiv) {
+  header.textContent = "Create a New Todo";
+  const todoTitleLabel = document.createElement("label");
+  todoTitleLabel.htmlFor = "todo-title";
+  todoTitleLabel.textContent = "Todo Title";
 
-  const dueDateField = document.createElement("input");
-  dueDateField.type = "date";
-  dueDateField.id = "due-date";
+  const todoDescriptionLabel = document.createElement("label");
+  todoDescriptionLabel.htmlFor = "todo-description";
+  todoDescriptionLabel.textContent = "Todo Description";
 
-  const priorityField = document.createElement("input");
-  priorityField.type = "number";
-  priorityField.id = "priority";
+  const todoDueDateLabel = document.createElement("label");
+  todoDueDateLabel.htmlFor = "todo-due-date";
+  todoDueDateLabel.textContent = "Todo Due date";
 
-  const notesField = document.createElement("input");
-  notesField.type = "text";
-  notesField.id = "notes";
+  const todoPriorityLabel = document.createElement("label");
+  todoPriorityLabel.htmlFor = "todo-priority";
+  todoPriorityLabel.textContent = "Todo Priority";
 
-  const checklistField = document.createElement("input");
-  checklistField.type = "checkbox";
-  checklistField.id = "check-list";
+  const todoNotesLabel = document.createElement("label");
+  todoNotesLabel.htmlFor = "todo-notes";
+  todoNotesLabel.textContent = "Todo Notes";
+
+  const todoChecklistLabel = document.createElement("label");
+  todoChecklistLabel.htmlFor = "todo-check-list";
+  todoChecklistLabel.textContent = "Todo Checklist";
+
+  todoTitleField = document.createElement("input");
+  todoTitleField.type = "text";
+  todoTitleField.id = "todo-title";
+
+  todoDescriptionField = document.createElement("textarea");
+  todoDescriptionField.id = "todo-description";
+
+  todoDueDateField = document.createElement("input");
+  todoDueDateField.type = "date";
+  todoDueDateField.id = "todo-due-date";
+
+  todoPriorityField = document.createElement("input");
+  todoPriorityField.type = "number";
+  todoPriorityField.id = "todo-priority";
+
+  todoNotesField = document.createElement("input");
+  todoNotesField.type = "text";
+  todoNotesField.id = "todo-notes";
+
+  todoChecklistField = document.createElement("input");
+  todoChecklistField.type = "checkbox";
+  todoChecklistField.id = "todo-check-list";
 
   dialogFieldsDiv.append(
-    projectNameLabel,
-    projectNameField,
-    titleLabel,
-    titleField,
-    descriptionLabel,
-    descriptionField,
-    dueDateLabel,
-    dueDateField,
-    priorityLabel,
-    priorityField,
-    notesLabel,
-    notesField,
-    checklistLabel,
-    checklistField,
+    todoTitleLabel,
+    todoTitleField,
+    todoDescriptionLabel,
+    todoDescriptionField,
+    todoDueDateLabel,
+    todoDueDateField,
+    todoPriorityLabel,
+    todoPriorityField,
+    todoNotesLabel,
+    todoNotesField,
+    todoChecklistLabel,
+    todoChecklistField,
   );
 }
 
-function createDialog() {
+function createDialog(fieldBuilderFunction, onSave) {
   dialogWrapper.innerHTML = "";
   const header = document.createElement("header");
   const dialog = document.createElement("dialog");
@@ -96,7 +119,6 @@ function createDialog() {
   const closeButton = document.createElement("button");
   const saveButton = document.createElement("button");
 
-  header.textContent = "Create New Project";
   saveButton.textContent = "Save";
   closeButton.textContent = "Close";
 
@@ -105,13 +127,15 @@ function createDialog() {
   closeButton.classList.add("close");
   saveButton.classList.add("save");
 
-  createDialogFields(dialogFieldsDiv);
+  fieldBuilderFunction(header, dialogFieldsDiv);
 
   closeButton.addEventListener("click", () => {
     dialog.close();
   });
+
   saveButton.addEventListener("click", () => {
-    //todo
+    //todo: save actions will take place here!
+    onSave();
     dialog.close();
   });
 
@@ -122,7 +146,7 @@ function createDialog() {
 }
 
 function createProject() {
-  createDialog();
+  createDialog(createProjectDialog, addProjectToProjectListDOM);
 }
 
 addProjectButton.addEventListener("click", createProject);
