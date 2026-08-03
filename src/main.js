@@ -22,11 +22,13 @@ let projectNameField,
   todoChecklistField;
 
 let projectListArr = [];
+let projects = [];
 
 function addProjectToProjectListDOM() {
   const projectNameVal = projectNameField.value;
   if (projectNameVal.trim().length !== 0) {
     const newProject = document.createElement("li");
+    newProject.classList.add("list-item");
     newProject.textContent = `${projectNameVal}`;
     projectListDOM.appendChild(newProject);
     projectListArr.push(projectNameVal);
@@ -111,6 +113,32 @@ function createToDoDialog(header, dialogFieldsDiv) {
   );
 }
 
+//TODO: class will be instantiated and the values of the dialog will be saved to an object here:
+function addTodo(selectedProject) {
+  const id = crypto.randomUUID();
+  const todo = new Todo(
+    id,
+    todoTitleField.value,
+    todoDescriptionField.value,
+    todoDueDateField.value,
+    todoPriorityField.value,
+    todoNotesField.value,
+    todoChecklistField.value,
+  );
+
+  const existingProject = projects.find(
+    (project) => project.key === selectedProject,
+  );
+
+  if (existingProject) {
+    existingProject.value.push(todo);
+  } else {
+    projects.push({ key: selectedProject, value: [todo] });
+  }
+
+  console.log(projects);
+}
+
 function createDialog(fieldBuilderFunction, onSave) {
   dialogWrapper.innerHTML = "";
   const header = document.createElement("header");
@@ -134,7 +162,6 @@ function createDialog(fieldBuilderFunction, onSave) {
   });
 
   saveButton.addEventListener("click", () => {
-    //todo: save actions will take place here!
     onSave();
     dialog.close();
   });
@@ -150,3 +177,19 @@ function createProject() {
 }
 
 addProjectButton.addEventListener("click", createProject);
+projectListDOM.addEventListener("click", (e) => {
+  if (e.target.classList.contains("list-item")) {
+    mainContent.innerHTML = "";
+    const addTodoButton = document.createElement("button");
+    addTodoButton.classList.add("btn-create-todo");
+    addTodoButton.textContent = "Create to do";
+    mainContent.appendChild(addTodoButton);
+
+    const selectedProject = projectListArr.find(
+      (item) => item === e.target.textContent,
+    );
+    addTodoButton.addEventListener("click", () => {
+      createDialog(createToDoDialog, () => addTodo(selectedProject));
+    });
+  }
+});

@@ -63,13 +63,16 @@ body {
     font-weight: bold;
 }
 
-.dialog > button {
+.dialog > button,
+.btn-create-todo
+ {
     height: 30px;
     width: 80px;
     border-radius: 8px;
     border: none;
     color: white;
     margin: 10px 5px;
+    cursor: pointer;
 }
 
 .save {
@@ -97,4 +100,8 @@ body {
 .dialog-fields-wrapper > input[type=checkbox] {
     height: 20px;
     align-self: baseline
+}
+
+.btn-create-todo {
+    background-color: var(--color-success); 
 }
