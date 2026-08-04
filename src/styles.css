@@ -64,7 +64,9 @@ body {
 }
 
 .dialog > button,
-.btn-create-todo
+.btn-create-todo,
+.btn-update-todo,
+.btn-delete-todo
  {
     height: 30px;
     width: 80px;
@@ -75,11 +77,14 @@ body {
     cursor: pointer;
 }
 
-.save {
+.save,
+.btn-create-todo,
+.btn-update-todo {
     background-color: var(--color-success); 
 }
 
-.close {
+.close,
+.btn-delete-todo {
     background-color: var(--color-danger); 
 }
 
@@ -102,6 +107,22 @@ body {
     align-self: baseline
 }
 
-.btn-create-todo {
-    background-color: var(--color-success); 
+.todo-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px
 }
+
+.todo-content > p {
+    margin: 3px 3px;
+}
+
+.todo-wrapper {
+    height: 250px;
+    width: 350px;
+    margin: 10px 10px;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    box-shadow: 1px 1px 10px  saddlebrown;
+}
+

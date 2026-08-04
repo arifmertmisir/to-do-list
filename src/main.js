@@ -113,30 +113,88 @@ function createToDoDialog(header, dialogFieldsDiv) {
   );
 }
 
-//TODO: class will be instantiated and the values of the dialog will be saved to an object here:
-function addTodo(selectedProject) {
-  const id = crypto.randomUUID();
-  const todo = new Todo(
-    id,
-    todoTitleField.value,
-    todoDescriptionField.value,
-    todoDueDateField.value,
-    todoPriorityField.value,
-    todoNotesField.value,
-    todoChecklistField.value,
-  );
+function displayTodo(selectedProject) {
+  mainContent.innerHTML = "";
+  const projectName = document.createElement("h2");
 
-  const existingProject = projects.find(
+  const currentProject = projects.find(
     (project) => project.key === selectedProject,
   );
 
-  if (existingProject) {
-    existingProject.value.push(todo);
-  } else {
-    projects.push({ key: selectedProject, value: [todo] });
-  }
+  projectName.textContent = currentProject.key;
+  mainContent.appendChild(projectName);
 
-  console.log(projects);
+  currentProject.value.forEach((todo) => {
+    const todoWrapper = document.createElement("div");
+    const todoContent = document.createElement("div");
+    const todoTitle = document.createElement("p");
+    const todoDescription = document.createElement("p");
+    const todoDueDate = document.createElement("p");
+    const todoPriority = document.createElement("p");
+    const todoNotes = document.createElement("p");
+    const todoChecklist = document.createElement("p");
+    const updateToDoButton = document.createElement("button");
+    const deleteToDoButton = document.createElement("button");
+
+    todoWrapper.classList.add("todo-wrapper");
+    todoContent.classList.add("todo-content");
+    updateToDoButton.classList.add("btn-update-todo");
+    deleteToDoButton.classList.add("btn-delete-todo");
+
+    todoTitle.textContent = todo.getTitle();
+    todoDescription.textContent = todo.getDescription();
+    todoDueDate.textContent = todo.getDueDate();
+    todoPriority.textContent = todo.getPriority();
+    todoNotes.textContent = todo.getNotes();
+    todoChecklist.textContent = todo.getChecklist();
+    updateToDoButton.textContent = "Update";
+    deleteToDoButton.textContent = "Delete";
+
+    todoContent.append(
+      todoTitle,
+      todoDescription,
+      todoDueDate,
+      todoPriority,
+      todoNotes,
+      todoChecklist,
+    );
+
+    todoWrapper.append(todoContent, updateToDoButton, deleteToDoButton);
+    mainContent.append(todoWrapper);
+  });
+}
+
+//TODO: class will be instantiated and the values of the dialog will be saved to an object here:
+function addTodo(selectedProject) {
+  const todoTitleValue = todoTitleField.value;
+  const todoDescriptionValue = todoDescriptionField.value;
+  const todoDueDateValue = todoDueDateField.value;
+
+  if (todoTitleValue && todoDescriptionValue && todoDueDateValue) {
+    const id = crypto.randomUUID();
+    const todo = new Todo(
+      id,
+      todoTitleField.value,
+      todoDescriptionField.value,
+      todoDueDateField.value,
+      todoPriorityField.value,
+      todoNotesField.value,
+      todoChecklistField.value,
+    );
+
+    const existingProject = projects.find(
+      (project) => project.key === selectedProject,
+    );
+
+    if (existingProject) {
+      existingProject.value.push(todo);
+    } else {
+      projects.push({ key: selectedProject, value: [todo] });
+    }
+
+    //call displayTodo here:
+    displayTodo(selectedProject);
+  }
 }
 
 function createDialog(fieldBuilderFunction, onSave) {
