@@ -1,15 +1,13 @@
 import "./styles.css";
 import Todo from "./todo.js";
-
-/*const todo = new Todo("Cinema", "Go to cinema today", new Date(), 3, "", "");
-console.log(todo.getTitle());
-
+/*
 const date = new Date("2026-01-01").toDateString();
 console.log(typeof date);
 */
 
 const projectListDOM = document.querySelector(".project-list");
 const addProjectButton = document.querySelector(".add-project-btn");
+const projectName = document.querySelector(".project-name");
 const mainContent = document.querySelector(".main-content");
 const dialogWrapper = document.querySelector(".dialog-wrapper");
 
@@ -36,6 +34,7 @@ function addProjectToProjectListDOM() {
 }
 
 function createProjectDialog(header, dialogFieldsDiv) {
+  mainContent.style.visibility = "hidden";
   header.textContent = "Create a New Project";
   const projectNameLabel = document.createElement("label");
   projectNameLabel.htmlFor = "project-name";
@@ -114,57 +113,52 @@ function createToDoDialog(header, dialogFieldsDiv) {
 }
 
 function displayTodo(selectedProject) {
-  mainContent.innerHTML = "";
-  const projectName = document.createElement("h2");
-
   const currentProject = projects.find(
     (project) => project.key === selectedProject,
   );
 
+  const lastIndex = currentProject.value.length;
+  const todo = currentProject.value[lastIndex - 1];
+
+  const todoWrapper = document.createElement("div");
+  const todoContent = document.createElement("div");
+  const todoTitle = document.createElement("p");
+  const todoDescription = document.createElement("p");
+  const todoDueDate = document.createElement("p");
+  const todoPriority = document.createElement("p");
+  const todoNotes = document.createElement("p");
+  const todoChecklist = document.createElement("p");
+  const updateToDoButton = document.createElement("button");
+  const deleteToDoButton = document.createElement("button");
+
+  todoWrapper.classList.add("todo-wrapper");
+  todoContent.classList.add("todo-content");
+  updateToDoButton.classList.add("btn-update-todo");
+  deleteToDoButton.classList.add("btn-delete-todo");
+
   projectName.textContent = currentProject.key;
-  mainContent.appendChild(projectName);
+  todoTitle.textContent = todo.getTitle();
+  todoDescription.textContent = todo.getDescription();
+  todoDueDate.textContent = todo.getDueDate();
+  todoPriority.textContent = todo.getPriority();
+  todoNotes.textContent = todo.getNotes();
+  todoChecklist.textContent = todo.getChecklist();
+  updateToDoButton.textContent = "Update";
+  deleteToDoButton.textContent = "Delete";
 
-  currentProject.value.forEach((todo) => {
-    const todoWrapper = document.createElement("div");
-    const todoContent = document.createElement("div");
-    const todoTitle = document.createElement("p");
-    const todoDescription = document.createElement("p");
-    const todoDueDate = document.createElement("p");
-    const todoPriority = document.createElement("p");
-    const todoNotes = document.createElement("p");
-    const todoChecklist = document.createElement("p");
-    const updateToDoButton = document.createElement("button");
-    const deleteToDoButton = document.createElement("button");
+  todoContent.append(
+    todoTitle,
+    todoDescription,
+    todoDueDate,
+    todoPriority,
+    todoNotes,
+    todoChecklist,
+  );
 
-    todoWrapper.classList.add("todo-wrapper");
-    todoContent.classList.add("todo-content");
-    updateToDoButton.classList.add("btn-update-todo");
-    deleteToDoButton.classList.add("btn-delete-todo");
-
-    todoTitle.textContent = todo.getTitle();
-    todoDescription.textContent = todo.getDescription();
-    todoDueDate.textContent = todo.getDueDate();
-    todoPriority.textContent = todo.getPriority();
-    todoNotes.textContent = todo.getNotes();
-    todoChecklist.textContent = todo.getChecklist();
-    updateToDoButton.textContent = "Update";
-    deleteToDoButton.textContent = "Delete";
-
-    todoContent.append(
-      todoTitle,
-      todoDescription,
-      todoDueDate,
-      todoPriority,
-      todoNotes,
-      todoChecklist,
-    );
-
-    todoWrapper.append(todoContent, updateToDoButton, deleteToDoButton);
-    mainContent.append(todoWrapper);
-  });
+  todoWrapper.append(todoContent, updateToDoButton, deleteToDoButton);
+  mainContent.append(todoWrapper);
 }
 
-//TODO: class will be instantiated and the values of the dialog will be saved to an object here:
 function addTodo(selectedProject) {
   const todoTitleValue = todoTitleField.value;
   const todoDescriptionValue = todoDescriptionField.value;
@@ -191,8 +185,6 @@ function addTodo(selectedProject) {
     } else {
       projects.push({ key: selectedProject, value: [todo] });
     }
-
-    //call displayTodo here:
     displayTodo(selectedProject);
   }
 }
@@ -227,7 +219,7 @@ function createDialog(fieldBuilderFunction, onSave) {
   dialog.append(header, dialogFieldsDiv, saveButton, closeButton);
   dialogWrapper.append(dialog);
   mainContent.append(dialogWrapper);
-  dialog.show();
+  dialog.showModal();
 }
 
 function createProject() {
@@ -237,16 +229,30 @@ function createProject() {
 addProjectButton.addEventListener("click", createProject);
 projectListDOM.addEventListener("click", (e) => {
   if (e.target.classList.contains("list-item")) {
-    mainContent.innerHTML = "";
-    const addTodoButton = document.createElement("button");
-    addTodoButton.classList.add("btn-create-todo");
-    addTodoButton.textContent = "Create to do";
-    mainContent.appendChild(addTodoButton);
+    mainContent.style.visibility = "visible";
+    const createTodoButton = document.createElement("button");
+    createTodoButton.classList.add("btn-create-todo");
+    createTodoButton.textContent = "Create to do";
+
+    if (projects.length === 0) mainContent.appendChild(createTodoButton);
 
     const selectedProject = projectListArr.find(
       (item) => item === e.target.textContent,
     );
-    addTodoButton.addEventListener("click", () => {
+    projectName.textContent = selectedProject;
+
+    //todo: group todo divs by their project name:
+    const todoWrappers = document.querySelectorAll(".todo-wrapper");
+
+    todoWrappers.forEach((todoWrapper) => {
+      if (!projects.some((project) => project.key === selectedProject)) {
+        todoWrapper.style.visibility = "hidden";
+      } else {
+        todoWrapper.style.visibility = "visible";
+      }
+    });
+
+    createTodoButton.addEventListener("click", () => {
       createDialog(createToDoDialog, () => addTodo(selectedProject));
     });
   }

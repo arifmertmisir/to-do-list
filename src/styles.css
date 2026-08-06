@@ -52,10 +52,12 @@ body {
 }
 
 .dialog-wrapper > dialog {
-    width: 800px;
-    position: static;
+    width: 90%; 
+    margin: 0 auto;
+    max-width: 800px;
     border-radius: 8px;
     border: 2px solid black;
+    padding: 24px;
 }
 
 .dialog > header {
@@ -107,9 +109,20 @@ body {
     align-self: baseline
 }
 
+.todo-wrapper {
+    overflow: auto;
+    height: 280px;
+    width: 350px;
+    padding: 10px;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    box-shadow: 1px 1px 10px  saddlebrown;
+}
+
 .todo-content {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 10px
 }
 
@@ -117,12 +130,4 @@ body {
     margin: 3px 3px;
 }
 
-.todo-wrapper {
-    height: 250px;
-    width: 350px;
-    margin: 10px 10px;
-    border: 1px solid lightgray;
-    border-radius: 8px;
-    box-shadow: 1px 1px 10px  saddlebrown;
-}
 
