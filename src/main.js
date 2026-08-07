@@ -10,6 +10,11 @@ const addProjectButton = document.querySelector(".add-project-btn");
 const projectName = document.querySelector(".project-name");
 const mainContent = document.querySelector(".main-content");
 const dialogWrapper = document.querySelector(".dialog-wrapper");
+const createTodoButton = document.querySelector(".btn-create-todo");
+
+createTodoButton.addEventListener("click", () => {
+  createDialog(createToDoDialog, () => addTodo(projectName.textContent));
+});
 
 let projectNameField,
   todoTitleField,
@@ -136,6 +141,8 @@ function displayTodo(selectedProject) {
   updateToDoButton.classList.add("btn-update-todo");
   deleteToDoButton.classList.add("btn-delete-todo");
 
+  todoWrapper.dataset.projectName = currentProject.key;
+
   projectName.textContent = currentProject.key;
   todoTitle.textContent = todo.getTitle();
   todoDescription.textContent = todo.getDescription();
@@ -230,30 +237,22 @@ addProjectButton.addEventListener("click", createProject);
 projectListDOM.addEventListener("click", (e) => {
   if (e.target.classList.contains("list-item")) {
     mainContent.style.visibility = "visible";
-    const createTodoButton = document.createElement("button");
-    createTodoButton.classList.add("btn-create-todo");
-    createTodoButton.textContent = "Create to do";
-
-    if (projects.length === 0) mainContent.appendChild(createTodoButton);
+    createTodoButton.hidden = false;
 
     const selectedProject = projectListArr.find(
       (item) => item === e.target.textContent,
     );
+
     projectName.textContent = selectedProject;
 
-    //todo: group todo divs by their project name:
+    //todo: group todo divs by their project name: (learn how to use dataset API)
     const todoWrappers = document.querySelectorAll(".todo-wrapper");
-
     todoWrappers.forEach((todoWrapper) => {
-      if (!projects.some((project) => project.key === selectedProject)) {
-        todoWrapper.style.visibility = "hidden";
+      if (todoWrapper.dataset.projectName !== selectedProject) {
+        todoWrapper.style.display = "none";
       } else {
-        todoWrapper.style.visibility = "visible";
+        todoWrapper.style.display = "";
       }
-    });
-
-    createTodoButton.addEventListener("click", () => {
-      createDialog(createToDoDialog, () => addTodo(selectedProject));
     });
   }
 });
