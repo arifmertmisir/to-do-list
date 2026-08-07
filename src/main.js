@@ -11,6 +11,7 @@ const projectName = document.querySelector(".project-name");
 const mainContent = document.querySelector(".main-content");
 const dialogWrapper = document.querySelector(".dialog-wrapper");
 const createTodoButton = document.querySelector(".btn-create-todo");
+const todoWrappersContainer = document.querySelector(".todos-wrapper");
 
 createTodoButton.addEventListener("click", () => {
   createDialog(createToDoDialog, () => addTodo(projectName.textContent));
@@ -163,7 +164,7 @@ function displayTodo(selectedProject) {
   );
 
   todoWrapper.append(todoContent, updateToDoButton, deleteToDoButton);
-  mainContent.append(todoWrapper);
+  todoWrappersContainer.appendChild(todoWrapper);
 }
 
 function addTodo(selectedProject) {
