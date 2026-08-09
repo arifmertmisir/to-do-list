@@ -181,7 +181,7 @@ function addTodo(selectedProject) {
       todoDueDateField.value,
       todoPriorityField.value,
       todoNotesField.value,
-      todoChecklistField.value,
+      todoChecklistField.checked ? "Completed" : "Not completed",
     );
 
     const existingProject = projects.find(
@@ -234,26 +234,41 @@ function createProject() {
   createDialog(createProjectDialog, addProjectToProjectListDOM);
 }
 
+function setUpdateAndDeleteButtonsVisibility(todoWrapper, visibility) {
+  const updateTodoButton = todoWrapper.querySelector(".btn-update-todo");
+  const deleteTodoButton = todoWrapper.querySelector(".btn-delete-todo");
+
+  updateTodoButton.style.display = visibility;
+  deleteTodoButton.style.display = visibility;
+}
+
 addProjectButton.addEventListener("click", createProject);
 projectListDOM.addEventListener("click", (e) => {
+  const todoWrappers = document.querySelectorAll(".todo-wrapper");
+  const selectedProject = projectListArr.find(
+    (item) => item === e.target.textContent,
+  );
+
   if (e.target.classList.contains("list-item")) {
     mainContent.style.visibility = "visible";
-    createTodoButton.hidden = false;
-
-    const selectedProject = projectListArr.find(
-      (item) => item === e.target.textContent,
-    );
-
+    createTodoButton.style.display = "";
     projectName.textContent = selectedProject;
-
-    //todo: group todo divs by their project name: (learn how to use dataset API)
-    const todoWrappers = document.querySelectorAll(".todo-wrapper");
+    projectName.style.display = "";
     todoWrappers.forEach((todoWrapper) => {
+      setUpdateAndDeleteButtonsVisibility(todoWrapper, "");
+
       if (todoWrapper.dataset.projectName !== selectedProject) {
         todoWrapper.style.display = "none";
       } else {
         todoWrapper.style.display = "";
       }
+    });
+  } else {
+    createTodoButton.style.display = "none";
+    projectName.style.display = "none";
+    todoWrappers.forEach((todoWrapper) => {
+      todoWrapper.style.display = "";
+      setUpdateAndDeleteButtonsVisibility(todoWrapper, "none");
     });
   }
 });
