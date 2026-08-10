@@ -54,7 +54,7 @@ function createProjectDialog(header, dialogFieldsDiv) {
 }
 
 function createToDoDialog(header, dialogFieldsDiv) {
-  header.textContent = "Create a New Todo";
+  if (header) header.textContent = "Create a New Todo";
   const todoTitleLabel = document.createElement("label");
   todoTitleLabel.htmlFor = "todo-title";
   todoTitleLabel.textContent = "Todo Title";
@@ -118,6 +118,39 @@ function createToDoDialog(header, dialogFieldsDiv) {
   );
 }
 
+function updateTodoDialog(todo) {
+  todoTitleField.value = todo.getTitle();
+  todoDescriptionField.value = todo.getDescription();
+  todoDueDateField.value = todo.getDueDate();
+  todoPriorityField.value = todo.getPriority();
+  todoNotesField.value = todo.getNotes();
+  todoChecklistField.value = todo.getChecklist();
+}
+
+function updateTodo(
+  todo,
+  todoTitle,
+  todoDescription,
+  todoDueDate,
+  todoPriority,
+  todoNotes,
+  todoChecklist,
+) {
+  todoTitle.textContent = todoTitleField.value;
+  todoDescription.textContent = todoDescriptionField.value;
+  todoDueDate.textContent = todoDueDateField.value;
+  todoPriority.textContent = todoPriorityField.value;
+  todoNotes.textContent = todoNotesField.value;
+  todoChecklist.textContent = todoChecklistField.checked;
+
+  todo.setTitle(todoTitleField.value);
+  todo.setDescription(todoDescriptionField.value);
+  todo.setDueDate(todoDueDateField.value);
+  todo.setPriority(todoPriorityField.value);
+  todo.setNotes(todoNotesField.value);
+  todo.setChecklist(todoChecklistField.value);
+}
+
 function displayTodo(selectedProject) {
   const currentProject = projects.find(
     (project) => project.key === selectedProject,
@@ -143,6 +176,7 @@ function displayTodo(selectedProject) {
   deleteToDoButton.classList.add("btn-delete-todo");
 
   todoWrapper.dataset.projectName = currentProject.key;
+  todoWrapper.dataset.todoId = todo.getId();
 
   projectName.textContent = currentProject.key;
   todoTitle.textContent = todo.getTitle();
@@ -165,6 +199,28 @@ function displayTodo(selectedProject) {
 
   todoWrapper.append(todoContent, updateToDoButton, deleteToDoButton);
   todoWrappersContainer.appendChild(todoWrapper);
+
+  //TODO: when Update button is clicked, a dialog will be open with its todo values:
+  updateToDoButton.addEventListener("click", () => {
+    createDialog(
+      (header, dialogFieldsDiv) => {
+        createToDoDialog(header, dialogFieldsDiv);
+        updateTodoDialog(todo);
+      },
+      () => {
+        /* burada todo'yu güncelleyecek fonksiyon */
+        updateTodo(
+          todo,
+          todoTitle,
+          todoDescription,
+          todoDueDate,
+          todoPriority,
+          todoNotes,
+          todoChecklist,
+        );
+      },
+    );
+  });
 }
 
 function addTodo(selectedProject) {
