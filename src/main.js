@@ -208,7 +208,6 @@ function displayTodo(selectedProject) {
         updateTodoDialog(todo);
       },
       () => {
-        /* burada todo'yu güncelleyecek fonksiyon */
         updateTodo(
           todo,
           todoTitle,
@@ -220,6 +219,38 @@ function displayTodo(selectedProject) {
         );
       },
     );
+  });
+
+  //TODO: delete button listener:
+  deleteToDoButton.addEventListener("click", () => {
+    const valueIndexToBeDeleted = currentProject.value.findIndex(
+      (item) => item.getId() === todo.getId(),
+    );
+
+    if (currentProject.value.length > 0) {
+      currentProject.value.splice(valueIndexToBeDeleted, 1);
+    }
+
+    if (currentProject.value.length === 0) {
+      const projectIndex = projects.findIndex(
+        (p) => p.key === currentProject.key,
+      );
+      const listArrIndex = projectListArr.indexOf(currentProject.key);
+
+      const listItems = Array.from(projectListDOM.querySelectorAll("li"));
+      const listItem = listItems.find(
+        (item) => item.textContent === currentProject.key,
+      );
+
+      projects.splice(projectIndex, 1);
+      projectListArr.splice(listArrIndex, 1);
+      listItem.remove();
+      projectName.remove();
+      createTodoButton.style.display = "none";
+    }
+    todoWrapper.remove();
+    console.log(`projects: ${projects}`);
+    console.log(`projectListArr: ${projectListArr}`);
   });
 }
 
@@ -250,6 +281,7 @@ function addTodo(selectedProject) {
       projects.push({ key: selectedProject, value: [todo] });
     }
     displayTodo(selectedProject);
+    console.log(projects.forEach((p) => console.log(p.value)));
   }
 }
 
