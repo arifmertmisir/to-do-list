@@ -1,5 +1,6 @@
 import "./styles.css";
 import Todo from "./todo.js";
+import { format } from "date-fns";
 /*
 const date = new Date("2026-01-01").toDateString();
 console.log(typeof date);
@@ -87,7 +88,7 @@ function createToDoDialog(header, dialogFieldsDiv) {
   todoDescriptionField.id = "todo-description";
 
   todoDueDateField = document.createElement("input");
-  todoDueDateField.type = "date";
+  todoDueDateField.type = "datetime-local";
   todoDueDateField.id = "todo-due-date";
 
   todoPriorityField = document.createElement("input");
@@ -138,7 +139,10 @@ function updateTodo(
 ) {
   todoTitle.textContent = todoTitleField.value;
   todoDescription.textContent = todoDescriptionField.value;
-  todoDueDate.textContent = todoDueDateField.value;
+  todoDueDate.textContent = format(
+    new Date(todoDueDateField.value),
+    "dd.MM.yyyy HH:mm:ss",
+  );
   todoPriority.textContent = todoPriorityField.value;
   todoNotes.textContent = todoNotesField.value;
   todoChecklist.textContent = todoChecklistField.checked;
@@ -181,7 +185,10 @@ function displayTodo(selectedProject) {
   projectName.textContent = currentProject.key;
   todoTitle.textContent = todo.getTitle();
   todoDescription.textContent = todo.getDescription();
-  todoDueDate.textContent = todo.getDueDate();
+  todoDueDate.textContent = format(
+    new Date(todo.getDueDate()),
+    "dd.MM.yyyy HH:mm:ss",
+  );
   todoPriority.textContent = todo.getPriority();
   todoNotes.textContent = todo.getNotes();
   todoChecklist.textContent = todo.getChecklist();
@@ -200,7 +207,6 @@ function displayTodo(selectedProject) {
   todoWrapper.append(todoContent, updateToDoButton, deleteToDoButton);
   todoWrappersContainer.appendChild(todoWrapper);
 
-  //TODO: when Update button is clicked, a dialog will be open with its todo values:
   updateToDoButton.addEventListener("click", () => {
     createDialog(
       (header, dialogFieldsDiv) => {
@@ -221,14 +227,14 @@ function displayTodo(selectedProject) {
     );
   });
 
-  //TODO: delete button listener:
   deleteToDoButton.addEventListener("click", () => {
     const valueIndexToBeDeleted = currentProject.value.findIndex(
       (item) => item.getId() === todo.getId(),
     );
 
     if (currentProject.value.length > 0) {
-      currentProject.value.splice(valueIndexToBeDeleted, 1);
+      if (valueIndexToBeDeleted !== -1)
+        currentProject.value.splice(valueIndexToBeDeleted, 1);
     }
 
     if (currentProject.value.length === 0) {
@@ -242,15 +248,24 @@ function displayTodo(selectedProject) {
         (item) => item.textContent === currentProject.key,
       );
 
-      projects.splice(projectIndex, 1);
-      projectListArr.splice(listArrIndex, 1);
-      listItem.remove();
-      projectName.remove();
+      if (projectIndex !== -1) {
+        projects.splice(projectIndex, 1);
+      }
+
+      if (listArrIndex !== -1) {
+        projectListArr.splice(listArrIndex, 1);
+      }
+
+      if (listItem) {
+        listItem.remove();
+      }
+
+      projectName.style.display = "none";
       createTodoButton.style.display = "none";
     }
     todoWrapper.remove();
-    console.log(`projects: ${projects}`);
-    console.log(`projectListArr: ${projectListArr}`);
+    console.log("projects:", projects);
+    console.log("projectListArr:", projectListArr);
   });
 }
 
