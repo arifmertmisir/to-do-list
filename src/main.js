@@ -4,12 +4,14 @@ import {
   createProjectDialog,
   createToDoDialog,
 } from "./dialogs.js";
-import { projectListArr } from "./state.js";
-import { addTodo } from "./todoController.js";
+import { projectListArr, projects } from "./state.js";
+import { addTodo, displayTodo } from "./todoController.js";
 import {
   addProjectToProjectListDOM,
   setUpdateAndDeleteButtonsVisibility,
 } from "./domUtils.js";
+
+import { loadState } from "./storage.js";
 
 const projectListDOM = document.querySelector(".project-list");
 const addProjectButton = document.querySelector(".add-project-btn");
@@ -76,3 +78,28 @@ projectListDOM.addEventListener("click", (e) => {
     });
   }
 });
+
+function renderSavedState() {
+  loadState();
+
+  projectListArr.forEach((projectKey) => {
+    const li = document.createElement("li");
+    li.classList.add("list-item");
+    li.textContent = projectKey;
+    projectListDOM.appendChild(li);
+  });
+
+  projects.forEach((project) => {
+    project.value.forEach(() => {
+      displayTodo(project.key, domElements);
+    });
+  });
+
+  document.querySelectorAll(".todo-wrapper").forEach((tw) => {
+    tw.style.display = "none";
+  });
+  createTodoButton.style.display = "none";
+  projectName.style.display = "none";
+}
+
+renderSavedState();

@@ -56,4 +56,28 @@ export default class Todo {
   setChecklist(checklist) {
     this.#checklist = checklist;
   }
+
+  toJSON() {
+    return {
+      id: this.#id,
+      title: this.#title,
+      description: this.#description,
+      dueDate: this.#dueDate,
+      priority: this.#priority,
+      notes: this.#notes,
+      checklist: this.#checklist,
+    };
+  }
+
+  static fromJSON(obj) {
+    return new Todo(
+      obj.id,
+      obj.title,
+      obj.description,
+      obj.dueDate,
+      obj.priority,
+      obj.notes,
+      obj.checklist,
+    );
+  }
 }

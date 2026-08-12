@@ -12,6 +12,7 @@ import {
   todoNotesField,
   todoChecklistField,
 } from "./dialogs.js";
+import { saveState } from "./storage.js";
 
 export function updateTodo(
   todo,
@@ -38,6 +39,7 @@ export function updateTodo(
   todo.setPriority(todoPriorityField.value);
   todo.setNotes(todoNotesField.value);
   todo.setChecklist(todoChecklistField.value);
+  saveState();
 }
 
 export function deleteTodo(
@@ -76,6 +78,7 @@ export function deleteTodo(
   }
 
   todoWrapper.remove();
+  saveState();
 }
 
 export function displayTodo(selectedProject, elements) {
@@ -201,5 +204,6 @@ export function addTodo(selectedProject, elements) {
     }
 
     displayTodo(selectedProject, elements);
+    saveState();
   }
 }

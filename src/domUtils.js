@@ -1,5 +1,6 @@
 import { projectNameField } from "./dialogs.js";
 import { projectListArr } from "./state.js";
+import { saveState } from "./storage.js";
 
 export function addProjectToProjectListDOM(projectListDOM) {
   const projectNameVal = projectNameField.value;
@@ -9,6 +10,7 @@ export function addProjectToProjectListDOM(projectListDOM) {
     newProject.textContent = `${projectNameVal}`;
     projectListDOM.appendChild(newProject);
     projectListArr.push(projectNameVal);
+    saveState();
   }
 }
 
